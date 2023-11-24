@@ -1,0 +1,89 @@
+
+Clone a Repository:
+git clone <repository_url>
+Initialize a New Repository:
+
+
+git init
+Check Status:
+
+
+git status
+Add Changes to Staging:
+
+
+git add <file_name>
+To add all changes:
+
+
+git add .
+Commit Changes:
+
+
+git commit -m "Your commit message"
+Pull Changes from a Remote Repository:
+
+
+git pull origin <branch_name>
+Push Changes to a Remote Repository:
+
+
+git push origin <branch_name>
+Create a New Branch:
+
+
+git branch <branch_name>
+Switch to a Branch:
+
+
+git checkout <branch_name>
+To create and switch to a new branch:
+
+
+git checkout -b <new_branch_name>
+Merge Branches:
+
+
+git merge <branch_name>
+View Commit History:
+
+
+git log
+Undo Local Changes:
+
+
+git checkout -- <file_name>
+Discard Changes in Staging:
+
+
+git reset
+Remove Untracked Files:
+
+
+git clean -df
+Create a Tag:
+
+
+git tag -a <tag_name> -m "Tag message"
+List Tags:
+
+
+git tag
+Revert to a Specific Commit:
+
+
+git revert <commit_hash>
+Create a Patch:
+
+
+git diff > patchfile
+Apply a Patch:
+
+
+git apply < patchfile
+Configure User Information:
+
+
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+These commands cover a range of Git operations. Remember to replace placeholders like <repository_url>, <branch_name>, and <file_name> with the actual values you're working with.

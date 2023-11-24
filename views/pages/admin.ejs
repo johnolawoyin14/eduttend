@@ -1,0 +1,65 @@
+<%- include("../partials/head.ejs") %>
+<%- include("../partials/navbar.ejs") %>
+<h3 class="text-center text-muted my-1">List of registered staffs</h3>
+<div class="staffs my-5">
+  
+<table class="table table-dark table-striped">
+    <% if (staffs.length>0){%> 
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Courses</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+
+        <% staffs.forEach(staff => {%>
+            
+            <tr>
+                <th scope="row"  id="index">
+                
+                </th>
+              <td> <img src="/api/auth/downloadStaff/<%= staff.imagename %>" alt="<%= staff.name %>" style="border-radius: 50%; width: 50px; height: 50px;">
+                <%= staff.name %></td>
+              <td><%= staff.email%></td>
+              <td>
+                <% staff.courses.forEach(course=> {%>
+                  <%= course %>  
+                <%}); %>
+              </td>
+              <td><a class="btn btn-secondary edit" href="/admin/update/<%= staff._id %>">Edit</a> <button class="btn btn-danger remove" key="<%= staff._id %>" onclick="deleteStaff('<%= staff._id %>')" >Remove</button></td>
+            </tr>
+              <%}); %>
+    
+    <% } else{ %>
+        <p class="text-center my-5">There is no registered staff</p>
+        <% } %>
+   
+  </tbody>
+</table>
+<div class="d-grid gap-2 col-2 mx-auto">
+  <a class="btn btn-primary" type="button" href="/admin/regStaff">ADD NEW STAFF</a>
+</div>
+</div>
+              <script >
+              
+                const a=document.querySelectorAll("#index")
+              
+                const deleteStaff=async (id)=>{
+                
+                    
+                    const del=await fetch(`/api/auth/staff/${id}`,{
+                        method:"DELETE"
+                    })
+                location.reload()
+                }
+                for (i=0; i<=a.length;i++){
+                  // console.log(i)
+              
+                  a[i].innerText=i+1
+              
+                }
+              </script>

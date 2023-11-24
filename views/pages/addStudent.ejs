@@ -1,0 +1,143 @@
+<%- include("../partials/head.ejs") %>
+<nav class="navbar bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand">
+        <img src="images/logo.png" width="50px" alt="">
+    </a>
+  </div>
+</nav>
+
+<style>
+form input,label,p{
+display: block;
+}
+.form form{
+    width: 500px;
+    padding: 20px;
+
+}
+.form form input{
+    width: 80%;
+    height: 50px;
+    border-radius: 5px;
+    border: none;
+    background-color: aliceblue;
+}
+.form form button{
+    margin-top: 20px;
+    width: 80%;
+}
+.form{
+    margin: auto;
+    display: flex;
+    align-items: center;
+}
+.error{
+    background-color: rgb(255, 154, 129) !important;
+}
+</style>
+
+<div class="form">
+    <form class="forms">
+        <h3 class="info"></h3>
+        <input type="file" id="image">
+        <label for="matricno">Matric No</label>
+        
+        <input type="text" name="matricno" id="matricno">
+        <label for="name">Name</label>
+        <p class="text-danger">
+          Please input Surname first
+       </p>
+        <input type="text" name="name"  id="name">
+        <label for="courses">Courses</label>
+        <p class="text-danger">
+            Ensure that the courses are seperated by comma(,) <br>e.g STA101,PMT202,BCH404
+        </p>
+        <input type="text" name="courses"  id="courses">
+        <button class="btn btn-primary"  value="">Submit</button>
+
+    </form>
+    
+</div>
+<script>
+    
+    const btn=document.querySelector(".btn-primary")
+    
+    btn.addEventListener("click",async(e)=>{
+        const name=document.getElementById("name")
+        const info=document.querySelector(".info")
+        const matricno=document.getElementById("matricno")
+        const course=document.getElementById("courses")
+        const form =document.querySelector(".forms")
+        const image=document.getElementById("image").files[0]
+        
+        e.preventDefault()
+console.log("Clicked")
+      
+        if (!name.value.length){
+             name.classList.add("error")
+        }
+        else{
+             name.classList.remove("error")
+
+        }
+        if (!course.value.length){
+             course.classList.add("error")
+        }
+        else{
+             course.classList.remove("error")
+
+        }
+        if (!matricno.value.length){
+             matricno.classList.add("error")
+        }
+        else{
+             matricno.classList.remove("error")
+
+        }
+    
+const courses=new Array
+const c=course.value.split(',')
+c.forEach(sub => {
+    courses.push(sub)
+
+});
+            const formData = new FormData(); // Use FormData to handle file uploads
+
+  formData.append("name", name.value);
+  formData.append("courses", courses);
+  formData.append("matricno", matricno.value);
+  formData.append("image", image);
+
+
+  const useFetch = await fetch("/api/auth/addStudent", {
+    method: "POST",
+    body: formData, // Send the FormData object
+  });
+
+           const json= await useFetch.json()
+           if (!useFetch.ok){
+            
+            info.innerText=json.error
+        } if (!useFetch.ok){
+
+               info.innerText=json.error
+           }
+        if (useFetch.ok){
+               info.innerText=json
+            console.log(json)
+            setTimeout(() => {
+                
+                location.href="/sucessful"
+            }, 3000);
+           }
+          
+        
+
+
+
+    })
+
+   
+
+</script>

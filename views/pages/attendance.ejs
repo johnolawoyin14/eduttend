@@ -1,0 +1,199 @@
+<%- include("../partials/head") %>
+<head>
+    		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+		<script src="/dist/jquery.table2excel.js"></script>
+</head>
+<style>
+td img{
+    width: 100px;
+}
+.coursesContainer{
+  /* display: flex; */
+  width: 100%;
+  gap: 50px;
+  flex-wrap: nowrap;
+  margin-bottom: 50px;
+}
+ .anchor{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #EAFCFF;
+  width: 150px;
+  height: 150px;
+  border-radius: 15px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 20px;
+  padding: 20px;
+
+word-wrap: break-word;
+  color: black;
+}
+.anchor:hover{
+  color: white;
+
+  background-color: #053DC8;
+}
+.body{
+  width: 80vw;
+
+  margin-left: 50px;
+  margin-right: 50px;
+}
+.sidebar{
+  width: 20vw;
+  height: 100vh;
+  background-color: #EAFCFF;
+}
+body{
+  display: flex;
+  flex-wrap: nowrap;
+}
+.sidebar .content{
+  margin: auto;
+  margin-top: 100px;
+}
+.sidebar .content img{
+  width: 250px;
+ display: block;
+ 
+  margin: auto;
+}
+navbar a{
+text-decoration: none;
+font-size: 30px;
+
+color: black;
+}
+.active{
+  opacity: 0.5;
+}
+.table>:not(caption)>*>*{
+border-bottom-width:0px !important;
+margin-bottom: 20px !important;
+}
+table{
+}
+.tr{
+  background-color: #EBEFF0 !important;
+}
+tr{
+  border: none !important;
+}
+.tr1{
+  border-radius: 20px 0px 0px 20px;
+  border-radius: 20px 0px 0px 20px;
+}
+.trend{
+  border-radius: 0px 20px 20px 0px;
+
+}
+.exportBtn{
+    width: fit-content;
+    float: right;
+    border: none;
+    background: none;
+}
+.logout{
+  position: absolute;
+margin-left: 50px;
+margin-right: 50px;
+bottom: 50px;
+}
+
+
+</style>
+<div class="sidebar position-relative">
+  <div class="content">
+  <img src="/images/logo2.png" alt="">
+
+</div>
+<a href="/logout" class="logout btn btn-danger">Logout</a>
+</div>
+<div class="body">
+<navbar>
+  <div>
+
+    <a href="/staff/<%= staff._id %>/attendance"  >Attendance</a>
+    <a href="/staff/<%= staff._id %>/course" class="active" style="margin-left: 50px;"> Course</a>
+  </div>
+  <hr>
+</navbar>
+  <header>
+      <div class="staffName text-primary ">
+  <!-- <%= staff.name %> -->
+      </div>
+  
+  </header>
+  
+  <div class="coursesContainer">
+<h3>IPE 501 Attendance
+
+</h3>
+</div>
+<% if (students.length>0){%> 
+    
+    <table class="table table2excel table2excel_with_colors" data-tableName="Test Table 2">
+        <thead>
+            <tr >
+                <th scope="col">Name</th>                            
+                <th scope="col">Matric no</th>
+                <th scope="col">Courses</th>
+                <th scope="col">Date/time</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% students.forEach(student => {%>
+                
+              <tr >
+  <td class="tr tr1" scope="col"> 
+    <img src="/api/auth/download/<%= student.imagename %>" alt="<%= student.name %>" style="border-radius: 50%; width: 50px; height: 50px;">
+    <span><%= student.name %></span>
+  </td>
+  <td class="tr" ><%= student.matricno %></td>
+  <td class="tr" > <% student.courses.forEach(course=> {%>
+                      <%= course %>  
+                    <%}); %></td>
+   <td class="tr "> 12-10-23/8:20pm</td>
+   <td class="tr trend"> Present</td>
+              </tr>
+               <%}); %>
+            </tbody>
+    </table>
+    <button class="exportBtn">
+        
+        <img src="/images/export.png" alt="export to excel" class="export">
+    </button>
+      <% } else{ %>
+        <p class="text-center my-5">There is no registered student</p>
+        <% } %>
+        
+
+  
+</div>
+
+<script>
+$(function() {
+				$(".exportBtn").click(function(e){
+                    console.log("Clicked")
+					var table = $(this).prev('.table2excel');
+                    
+					if(table && table.length){
+						var preserveColors = (table.hasClass('table2excel_with_colors') ? true : false);
+						$(table).table2excel({
+							exclude: ".noExl",
+							name: "Excel Document Name",
+							filename: "Attendance" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+							fileext: ".xls",
+							exclude_img: false,
+							exclude_links: true,
+							exclude_inputs: true,
+							preserveColors: preserveColors
+						});
+					}
+				});
+				
+			});
+</script>
