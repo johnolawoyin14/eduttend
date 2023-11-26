@@ -73,8 +73,7 @@ color: black;
 border-bottom-width:0px !important;
 margin-bottom: 20px !important;
 }
-table{
-}
+
 .tr{
   background-color: #EBEFF0 !important;
 }
@@ -82,11 +81,10 @@ tr{
   border: none !important;
 }
 .tr1{
-  border-radius: 20px 0px 0px 20px;
-  border-radius: 20px 0px 0px 20px;
+  border-radius: 30px 0px 0px 30px;
 }
 .trend{
-  border-radius: 0px 20px 20px 0px;
+  border-radius: 0px 30px 30px 0px;
 
 }
 .exportBtn{
@@ -101,13 +99,43 @@ margin-left: 50px;
 margin-right: 50px;
 bottom: 50px;
 }
+.coursesContainer{
+  display: flex;
+  gap: 50px;
+  flex-wrap: nowrap;
+  margin-bottom: 50px;
+}
+ .coursesContainer{
+  display: flex;
+  gap: 50px;
+  flex-wrap: nowrap;
+  margin-bottom: 50px;
+}
+.staffInfo{
+  margin-top: 100px;
+}
+.staffInfo img{
+  border-radius: 20px;
+  width: 250px;
+  height: 188px;
+  background-color: white;
+}
+ .staffInfo .lead{
+white-space: pre-line !important;
+  text-align: center;
+  font-size: 40px !important;
+ }
 
 
 </style>
 <div class="sidebar position-relative">
   <div class="content">
   <img src="/images/logo2.png" alt="">
-
+  <div class="staffInfo">
+    <img src="/api/auth/downloadStaff/<%= staff.imagename %>" alt="<%= staff.name %>">
+    <p class="lead" style="white-space: pre-line !important;"><%= staff.name %></p>
+   
+  </div>
 </div>
 <a href="/logout" class="logout btn btn-danger">Logout</a>
 </div>
@@ -127,14 +155,17 @@ bottom: 50px;
   
   </header>
   
-  <div class="coursesContainer">
-<h3>IPE 501 Attendance
 
-</h3>
-</div>
-<% if (students.length>0){%> 
-    
-    <table class="table table2excel table2excel_with_colors" data-tableName="Test Table 2">
+  <div class="coursesContainer">
+  <% staff.courses.forEach(course=>{%>
+      <a href="/staff/<%= staff._id %>/course/<%= course %>/attendance" class="anchor">
+        <%= course %>
+      </a>
+      <%})%>
+    </div>
+    <% if (students.length>0){%> 
+      <h3>All Attendance</h3>
+      <table class="table table2excel table2excel_with_colors" data-tableName="Test Table 2">
         <thead>
             <tr >
                 <th scope="col">Name</th>                            
@@ -153,9 +184,9 @@ bottom: 50px;
     <span><%= student.name %></span>
   </td>
   <td class="tr" ><%= student.matricno %></td>
-  <td class="tr" > <% student.courses.forEach(course=> {%>
-                      <%= course %>  
-                    <%}); %></td>
+  <td class="tr" > 
+                     STA101
+                    </td>
    <td class="tr "> 12-10-23/8:20pm</td>
    <td class="tr trend"> Present</td>
               </tr>
@@ -166,14 +197,15 @@ bottom: 50px;
         
         <img src="/images/export.png" alt="export to excel" class="export">
     </button>
-      <% } else{ %>
-        <p class="text-center my-5">There is no registered student</p>
-        <% } %>
-        
-
-  
-</div>
-
+    <% } else{ %>
+      <p class="text-center my-5">There is no registered student</p>
+      <% } %>
+      
+      
+      
+    </div>
+    
+  </div>
 <script>
 $(function() {
 				$(".exportBtn").click(function(e){

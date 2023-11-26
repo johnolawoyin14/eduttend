@@ -223,6 +223,38 @@ app.get("/staff/:id/course/:name", async (req, res) => {
       staff: staffs,
       students: students,
       course: name,
+      req: req,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json("Server error");
+  }
+});
+app.get("/staff/:id/course/:name/attendance", async (req, res) => {
+  const { id, name } = req.params;
+  console.log(name);
+  try {
+    const staffs = await Staff.findById({ _id: id });
+    const staffCourses = staffs.courses.map(
+      (course) => new RegExp(course, "i")
+    );
+
+    console.log("Staff Courses:", staffCourses);
+    const students = await Student.find({
+      courses: {
+        $elemMatch: { $regex: new RegExp(name, "i") },
+      },
+    });
+
+    console.log("Students:", students);
+          req.session.isAuthenticated = true;
+
+    res.render("pages/courseAttendance", {
+      title: `Staff`,
+      staff: staffs,
+      students: students,
+      course: name,
+      req:req
     });
   } catch (error) {
     console.log(error);

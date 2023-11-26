@@ -90,12 +90,31 @@ margin-left: 50px;
 margin-right: 50px;
 bottom: 50px;
 }
-
+  .staffInfo{
+  margin-top: 100px;
+}
+.staffInfo img{
+  border-radius: 20px;
+  width: 250px;
+  height: 188px;
+  background-color: white;
+}
+ .staffInfo .lead{
+white-space: pre-line !important;
+  text-align: center;
+  font-size: 40px !important;
+ }
 
 </style>
 <div class="sidebar position-relative">
   <div class="content">
   <img src="/images/logo2.png" alt="">
+
+<div class="staffInfo">
+    <img src="/api/auth/downloadStaff/<%= staff.imagename %>" alt="<%= staff.name %>">
+    <p class="lead" style="white-space: pre-line !important;"><%= staff.name %></p>
+   
+  </div>
 
 </div>
 <a href="/logout" class="logout btn btn-danger">Logout</a>
@@ -105,7 +124,7 @@ bottom: 50px;
   <div>
 
     <a href="/staff/<%= staff._id %>/attendance"  class="active" >Attendance</a>
-    <a href="/course" style="margin-left: 50px;"> Course</a>
+    <a href="/staff/<%= staff._id %>/course" style="margin-left: 50px;"> Course</a>
   </div>
   <hr>
 </navbar>
