@@ -1,0 +1,165 @@
+<%- include("../partials/head.ejs") %>
+<%- include("../partials/navbar.ejs") %>
+
+<style>
+form input,label,p{
+display: block;
+}
+.form form{
+    width: 500px;
+    padding: 20px;
+
+}
+.form form input{
+    width: 80%;
+    height: 50px;
+    border-radius: 5px;
+    border: none;
+    background-color: aliceblue;
+}
+.form form button{
+    margin-top: 20px;
+}
+.form{
+    margin: auto;
+    display: flex;
+    justify-content: center;
+}
+.error{
+    background-color: rgb(255, 154, 129) !important;
+}
+.form form input::-webkit-file-upload-button{
+    display: none !important;
+}
+</style>
+
+<div class="form">
+    <form class="forms">
+        <h3 class="info"></h3>
+
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email">
+        <label for="password">Password</label>
+        <p class="text-danger">
+            your surname will be set as the password
+        </p>
+        <input type="text" name="password" disabled id="password">
+        <label for="name">Name</label>
+        <p class="text-danger">
+          Please input Surname first
+       </p>
+        <input type="text" name="name"  id="name">
+        <label for="courses">Courses</label>
+        <p class="text-danger">
+            Ensure that the courses are seperated by comma(,) <br>e.g STA101,PMT202,BCH404
+        </p>
+        <input type="text" name="courses"  id="courses">
+
+<label for="courses">Upload your image</label>
+            <input type="file" placeholder="Upload image" id="images">
+        <button class="btn btn-primary"  value="">Submit</button>
+
+    </form>
+</div>
+<script>
+    const name=document.getElementById("name")
+    const info=document.querySelector(".info")
+    const password=document.getElementById("password")
+    const email=document.getElementById("email")
+    const course=document.getElementById("courses")
+    const form =document.querySelector(".forms")
+    const btn=document.querySelector(".btn-primary")
+    
+    
+    
+
+
+    btn.addEventListener("click",async(e)=>{
+        const image=document.querySelector("#images").files[0]
+        e.preventDefault()
+console.log(image)
+        if (!email.value.length){
+             email.classList.add("error")
+        }
+        else{
+             email.classList.remove("error")
+
+        }
+        if (!name.value.length){
+             name.classList.add("error")
+        }
+        else{
+             name.classList.remove("error")
+
+        }
+        if (!course.value.length){
+             course.classList.add("error")
+        }
+        else{
+             course.classList.remove("error")
+
+        }
+        if (!password.value.length){
+             password.classList.add("error")
+        }
+        else{
+             password.classList.remove("error")
+
+        }
+        
+        const courses=new Array
+        const c=course.value.split(',')
+        c.forEach((sub) => {
+
+            
+        courses.push(sub)
+        console.log(sub)
+console.log(courses)
+        });
+        const formData= new FormData()
+        formData.append("email",email.value)
+        formData.append("name",name.value)
+        formData.append("password",password.value)
+        formData.append("courses", JSON.stringify(courses));
+        formData.append("image",image)
+
+        // const formData={
+        //     email:email.value,
+        //     name:name.value,
+        //        courses,
+        //        password:password.value,
+        //        image
+        //     }
+            const post=await fetch('/api/auth/addStaff',{
+                method:"POST",
+               
+               body:formData
+           })
+
+           const json= await post.json()
+           if (!post.ok){
+            
+            info.innerText=json.error
+        }
+        if (post.ok){
+               info.innerText=json
+            console.log(json)
+            setTimeout(() => {
+                
+                location.href="/admin"
+            }, 3000);
+           }
+        
+
+
+
+    })
+
+    name.addEventListener("input",()=>{
+        
+        pass=name.value.split(" ")[0].toUpperCase()
+        password.value=pass
+
+    })
+
+</script>

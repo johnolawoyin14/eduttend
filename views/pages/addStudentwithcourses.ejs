@@ -1,0 +1,157 @@
+<%- include("../partials/head.ejs") %>
+
+
+<style>
+    body{
+        background-color: #FBFDFE;
+    }
+form input,label,p{
+display: block;
+}
+.form form{
+    width: 500px;
+    padding: 20px;
+    margin: auto;
+
+}
+.form form input::-webkit-file-upload-button{
+    display: none !important;
+}
+.form form .cont{
+    background-color: white;
+    padding: 50px;
+    border-radius: 15px;
+}
+.form form input{
+    height: 50px;
+    border-radius: 5px;
+    border: none;
+    background-color: aliceblue;
+}
+.form form input,label,button{
+    width: 80%;
+     margin: auto ;
+    display: block; 
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+}
+.form form button{
+    margin-top: 20px;
+    margin-left: 40px;
+    width: 80%;
+}
+.form{
+    margin: auto;
+    display: flex;
+    align-items: center;
+}
+.error{
+    background-color: rgb(255, 154, 129) !important;
+}
+.logo{
+        width: 100px;
+        display: block;
+        margin: auto;
+        margin-bottom: 20px;
+    }
+
+</style>
+
+<div class="form">
+    <form class="forms">
+        <img src="/images/logo.png"  class="logo">
+        <div class="cont">
+
+            <h3 class="text-center"><%=course%> Course <br>Registration</h3>
+            <h3 class="info text-center"></h3>
+            <label for="matricno">Matric No</label>
+            
+            <input type="text" name="matricno" id="matricno">
+            <label for="name">Name</label>
+            <input type="text" name="name"  id="name">
+            <input type="text" name="courses" value="<%= course %>" disabled id="courses">
+            <label for="courses">Upload your image</label>
+            <input type="file" placeholder="Upload image" id="image">
+            <button class="btn btn-primary"  value="">Submit</button>
+        </div>
+
+    </form>
+    
+</div>
+<script>
+    
+    const btn=document.querySelector(".btn-primary")
+    
+    btn.addEventListener("click",async(e)=>{
+        const name=document.getElementById("name")
+        const info=document.querySelector(".info")
+        const matricno=document.getElementById("matricno")
+        const course=document.getElementById("courses")
+        const form =document.querySelector(".forms")
+        const image=document.getElementById("image").files[0]
+        
+        e.preventDefault()
+console.log("Clicked")
+      
+        if (!name.value.length){
+             name.classList.add("error")
+        }
+        else{
+             name.classList.remove("error")
+
+        
+    
+        }
+        if (!matricno.value.length){
+             matricno.classList.add("error")
+        }
+        else{
+             matricno.classList.remove("error")
+
+        }
+       
+    
+
+const formData = new FormData(); // Use FormData to handle file uploads
+
+  formData.append("name", name.value);
+  formData.append("courses", course.value);
+  formData.append("matricno", matricno.value);
+  formData.append("image", image);
+
+
+
+  const useFetch = await fetch("/api/auth/addStudent", {
+    method: "POST",
+    body: formData, // Send the FormData object
+  });
+
+           const json= await useFetch.json()
+           if (!useFetch.ok){
+            
+            info.innerText=json.error
+        } if (!useFetch.ok){
+
+               info.innerText=json.error
+           }
+        if (useFetch.ok){
+               info.innerText=json
+            console.log(json)
+            setTimeout(() => {
+                
+                location.href="/sucessful"
+            }, 3000);
+           }
+          
+        
+
+
+
+    })
+
+   
+
+</script>

@@ -1,0 +1,194 @@
+<%- include("../partials/head") %>
+<style>
+td img{
+    width: 100px;
+}
+.coursesContainer{
+  display: flex;
+  gap: 50px;
+  flex-wrap: nowrap;
+  margin-bottom: 50px;
+}
+ .anchor{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #EAFCFF;
+  width: 150px;
+  height: 150px;
+  border-radius: 15px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 20px;
+  padding: 20px;
+
+word-wrap: break-word;
+  color: black;
+}
+.anchor:hover{
+  color: white;
+
+  background-color: #053DC8;
+}
+.body{
+  width: 80vw;
+
+  margin-left: 50px;
+  margin-right: 50px;
+}
+.sidebar{
+  width: 20vw;
+  height: 100vh;
+  background-color: #EAFCFF;
+}
+body{
+  display: flex;
+  flex-wrap: nowrap;
+}
+.sidebar .content{
+  margin: auto;
+  margin-top: 100px;
+}
+.sidebar .content img{
+  width: 250px;
+ display: block;
+ 
+  margin: auto;
+}
+navbar a{
+text-decoration: none;
+font-size: 30px;
+
+color: black;
+}
+.active{
+  opacity: 0.5;
+}
+.table>:not(caption)>*>*{
+border-bottom-width:0px !important;
+margin-bottom: 20px !important;
+}
+table{
+}
+.tr{
+  background-color: #EBEFF0 !important;
+}
+tr{
+  border: none !important;
+}
+.tr1{
+  border-radius: 30px 0px 0px 30px;
+}
+.trend{
+  border-radius: 0px 30px 30px 0px;
+
+}
+
+.logout{
+  position: absolute;
+margin-left: 50px;
+margin-right: 50px;
+bottom: 50px;
+}
+  .staffInfo{
+  margin-top: 100px;
+}
+.staffInfo img{
+  border-radius: 20px;
+  width: 250px;
+  height: 188px;
+  background-color: white;
+}
+ .staffInfo .lead{
+white-space: pre-line !important;
+  text-align: center;
+  font-size: 40px !important;
+ }
+
+</style>
+<div class="sidebar position-relative">
+  <div class="content">
+  <img src="/images/logo2.png" alt="">
+
+<div class="staffInfo">
+    <img src="/api/auth/downloadStaff/<%= staff.imagename %>" alt="<%= staff.name %>">
+    <p class="lead" style="white-space: pre-line !important;"><%= staff.name %></p>
+   
+  </div>
+
+</div>
+<a href="/logout" class="logout btn btn-danger">Logout</a>
+</div>
+<div class="body">
+<navbar>
+  <div>
+
+    <a href="/staff/<%= staff._id %>/attendance"  class="active" >Attendance</a>
+    <a href="/staff/<%= staff._id %>/course" style="margin-left: 50px;"> Course</a>
+  </div>
+  <hr>
+</navbar>
+  <header>
+      <div class="staffName text-primary ">
+  <!-- <%= staff.name %> -->
+      </div>
+  
+  </header>
+  
+  <div class="coursesContainer">
+  <% staff.courses.forEach(course=>{%>
+      <a href="/staff/<%= staff._id %>/course/<%= course %>" class="anchor">
+        <%= course %>
+      </a>
+      <%})%>
+    </div>
+      <% if (students.length>0){%> 
+         <h3>All Students</h3>
+             <table class="table">
+      <thead>
+              <tr >
+                <th scope="col">Name</th>                            
+                <th scope="col">Matric no</th>
+                <th scope="col">Courses</th>
+                <!-- <th scope="col">Action</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <% students.forEach(student => {%>
+                
+              <tr >
+  <td class="tr tr1" scope="col"> 
+    <img src="/api/auth/download/<%= student.imagename %>" alt="<%= student.name %>" style="border-radius: 50%; width: 50px; height: 50px;">
+    <span><%= student.name %></span>
+  </td>
+  <td class="tr" ><%= student.matricno %></td>
+  <td  class="tr trend" > <% student.courses.forEach(course=> {%>
+                      <%= course %>  
+                    <%}); %></td>
+   <!-- <td class="tr trend"> <button class="btn  remove" key="<%= student._id %>" onclick="deleteStaff('<%= student._id %>')" style="background-color: #F50000 !important;color: white !important; " >Remove</button></td> -->
+              </tr>
+               <%}); %>
+            </tbody>
+    </table>
+      <% } else{ %>
+          <p class="text-center my-5">There is no registered student</p>
+          <% } %>
+     
+  
+</div>
+
+<script>
+    //  const data=JSON.parse(localStorage.getItem("eduttend-staffs") )
+    //  const name=document.querySelector(".staffName")
+
+    //  name.innerHTML=`<h3 class="text-primary my-5 mx-5">${data.name}</h3>`
+    //  console.log(data) 
+
+     const deleteStaff=async (id)=>{
+    
+       location.reload()
+    const del=await fetch(`/api/auth/student/${id}`,{
+        method:"DELETE"
+    })
+}
+</script>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Capture</title>
+</head>
+<body>
+    <h1>Camera Capture</h1>
+
+    <canvas id="canvas" width="640" height="480"></canvas>
+    <select id="cameraList"></select>
+    <button onclick="startCamera()">Start Camera</button>
+    <button onclick="capture()">Capture</button>
+    <img id="capturedImage" style="display:none;">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            listCameras();
+        });
+
+        async function listCameras() {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const cameraList = document.getElementById('cameraList');
+
+            devices.forEach(device => {
+                if (device.kind === 'videoinput') {
+                    const option = document.createElement('option');
+                    option.value = device.deviceId;
+                    option.text = device.label || `Camera ${cameraList.options.length + 1}`;
+                    cameraList.appendChild(option);
+                }
+            });
+        }
+
+        let stream;
+        async function startCamera() {
+            const selectedCamera = document.getElementById('cameraList').value;
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: selectedCamera } });
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                document.body.appendChild(video);
+                video.play();
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+            }
+        }
+
+        function capture() {
+            const video = document.querySelector('video');
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const capturedImage = document.getElementById('capturedImage');
+            capturedImage.src = canvas.toDataURL('image/png');
+            capturedImage.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
