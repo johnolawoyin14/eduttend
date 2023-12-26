@@ -11,7 +11,10 @@ const socket=require("socket.io")(http)
 const port=process.env.PORT
 const Staff=require("./models/staffModel")
 const Student=require("./models/studentModel")
+<<<<<<< HEAD
 const Attendance=require("./models/attendanceModel")
+=======
+>>>>>>> 8bd1a0838e4c7e3266e1d954f789339f9cf2e6f5
 const userRoute=require("./routes/user")
 const attendanceRoute=require("./routes/attendance")
 const session=require("express-session")
@@ -75,12 +78,15 @@ app.get("/login",async (req, res) => {
     title: "Staff Login",
   });
 });
+<<<<<<< HEAD
 app.get("/test",async (req, res) => {
   
   res.render("pages/test", {
     title: "Staff Login",
   });
 });
+=======
+>>>>>>> 8bd1a0838e4c7e3266e1d954f789339f9cf2e6f5
 
 
 
@@ -242,7 +248,20 @@ app.get("/staff/:id/course/:name/attendance", async (req, res) => {
   console.log(name);
   try {
     const staffs = await Staff.findById({ _id: id });
+<<<<<<< HEAD
     const students = await Attendance.find({ course: { $in: name } });
+=======
+    const staffCourses = staffs.courses.map(
+      (course) => new RegExp(course, "i")
+    );
+
+    console.log("Staff Courses:", staffCourses);
+    const students = await Student.find({
+      courses: {
+        $elemMatch: { $regex: new RegExp(name, "i") },
+      },
+    });
+>>>>>>> 8bd1a0838e4c7e3266e1d954f789339f9cf2e6f5
 
     console.log("Students:", students);
           req.session.isAuthenticated = true;
@@ -269,16 +288,34 @@ app.get("/staff/:id/attendance", async (req, res) => {
 
     console.log("Staff Courses:", staffCourses);
 
+<<<<<<< HEAD
     const attendance = await Attendance.find({ course: { $in: staffCourses } });
    
 
     console.log("Students:", attendance);
+=======
+    const students = await Student.find({ courses: { $in: staffCourses } });
+    const studentCourses = students
+      .map((student) => student.courses.map((course) => course))
+      .flat();
+
+    const commonCourses = staffCourses.filter((course) =>
+      studentCourses.includes(course)
+    );
+    console.log("common courses:", commonCourses);
+
+    console.log("Students:", students);
+>>>>>>> 8bd1a0838e4c7e3266e1d954f789339f9cf2e6f5
           req.session.isAuthenticated = true;
 
     res.render("pages/attendance", {
       title: `Attendance`,
       staff: staffs,
+<<<<<<< HEAD
       students: attendance,
+=======
+      students: students,
+>>>>>>> 8bd1a0838e4c7e3266e1d954f789339f9cf2e6f5
     });
   } catch (error) {
     console.log(error);

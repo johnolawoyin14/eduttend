@@ -2,6 +2,7 @@
 
 const express = require("express");
 const router = express.Router();
+<<<<<<< HEAD
 const jwt = require("jsonwebtoken");
 const Attendance = require("../models/attendanceModel");
 const staff = require("../models/staffModel");
@@ -108,11 +109,22 @@ router.post("/start/:id", authenticateToken,async (req, res) => {
   }
 });
 router.post("/update", authenticateToken, async (req, res) => {
+=======
+const Attendance = require("../models/attendanceModel");
+const Student=require("../models/studentModel")
+
+// Endpoint to receive attendance data from Django server
+router.post("/update", async (req, res) => {
+>>>>>>> 8bd1a0838e4c7e3266e1d954f789339f9cf2e6f5
   const { studentId, status } = req.body;
 
   try {
     // Find or create the student based on studentId
     let student = await Student.findOne({ studentId });
+<<<<<<< HEAD
+=======
+   
+>>>>>>> 8bd1a0838e4c7e3266e1d954f789339f9cf2e6f5
 
     // Check if attendance record already exists for today
     const existingAttendance = await Attendance.findOne({
@@ -145,4 +157,8 @@ router.post("/update", authenticateToken, async (req, res) => {
 });
 
 module.exports = router;
+<<<<<<< HEAD
 ``;
+=======
+``
+>>>>>>> 8bd1a0838e4c7e3266e1d954f789339f9cf2e6f5
