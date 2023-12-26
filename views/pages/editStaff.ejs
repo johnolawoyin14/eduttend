@@ -56,8 +56,8 @@ display: block;
 
     btn.addEventListener("click",async(e)=>{
         e.preventDefault()
-
-        if (!email.value.length){
+  const cleanedCourse = course.value.replace(/\s/g, '')
+  if (!email.value.length){
              email.classList.add("error")
         }
         else{
@@ -75,7 +75,7 @@ display: block;
        
         
 const courses=new Array
-const c=course.value.split(',')
+            const c= cleanedCourse .split(',')
 c.forEach(sub => {
     courses.push(sub)
 });

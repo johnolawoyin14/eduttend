@@ -72,12 +72,13 @@ display: block;
     
     
     
-
-
+    
+    
     btn.addEventListener("click",async(e)=>{
-        const image=document.querySelector("#images").files[0]
         e.preventDefault()
-console.log(image)
+        const image=document.querySelector("#images").files[0]
+        console.log(image)
+        const cleanedCourse = course.value.replace(/\s/g, '')
         if (!email.value.length){
              email.classList.add("error")
         }
@@ -108,7 +109,8 @@ console.log(image)
         }
         
         const courses=new Array
-        const c=course.value.split(',')
+        console.log(cleanedCourse)
+        const c= cleanedCourse .split(',')
         c.forEach((sub) => {
 
             
