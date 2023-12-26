@@ -1,31 +1,28 @@
-require("dotenv").config()
+require("dotenv").config();
 
-const express=require("express")
-const app=express()
-const ejs=require("ejs")
-const http=require("http").createServer(app)
-const mongoose=require("mongoose")
-const morgan=require("morgan")
-const path=require("path")
-const socket=require("socket.io")(http)
-const port=process.env.PORT
-const Staff=require("./models/staffModel")
-const Student=require("./models/studentModel")
-<<<<<<< HEAD
-const Attendance=require("./models/attendanceModel")
-=======
->>>>>>> 8bd1a0838e4c7e3266e1d954f789339f9cf2e6f5
-const userRoute=require("./routes/user")
-const attendanceRoute=require("./routes/attendance")
-const session=require("express-session")
-app.use(morgan("dev"))
-app.use(express.json())
+const express = require("express");
+const app = express();
+const ejs = require("ejs");
+const http = require("http").createServer(app);
+const mongoose = require("mongoose");
+const morgan = require("morgan");
+const path = require("path");
+const socket = require("socket.io")(http);
+const port = process.env.PORT;
+const Staff = require("./models/staffModel");
+const Student = require("./models/studentModel");
 
-app.set("view engine","ejs")
-app.use(express.static("assets"))
+const Attendance = require("./models/attendanceModel");
+
+const userRoute = require("./routes/user");
+const attendanceRoute = require("./routes/attendance");
+const session = require("express-session");
+app.use(morgan("dev"));
+app.use(express.json());
+
+app.set("view engine", "ejs");
+app.use(express.static("assets"));
 app.use(express.urlencoded({ extended: true }));
-
-
 // Configure session for /admin route
 app.use(
   session({
@@ -58,7 +55,7 @@ app.use(
   })
 );
 const isAuthenticated = async (req, res, next) => {
-  console.log(req.session)
+  console.log(req.session);
   // Check if the request path is "/login" or if the user is authenticated
   if (req.path === "/login" || req.session.isAuthenticated) {
     return next();
@@ -72,39 +69,31 @@ app.use("/staff", isAuthenticated);
 
 app.use("/api/auth", userRoute);
 app.use("/api/attendance", attendanceRoute);
-app.get("/login",async (req, res) => {
-  
+app.get("/login", async (req, res) => {
   res.render("pages/login", {
     title: "Staff Login",
   });
 });
-<<<<<<< HEAD
-app.get("/test",async (req, res) => {
-  
+
+app.get("/test", async (req, res) => {
   res.render("pages/test", {
     title: "Staff Login",
   });
 });
-=======
->>>>>>> 8bd1a0838e4c7e3266e1d954f789339f9cf2e6f5
 
-
-
-
-app.get('/admin',async(req,res)=>{
-    try {
-     const staffs = await Staff.find({}).sort({ createdAt: -1 });
-     console.log(staffs);
-     res.render("pages/admin",{
-         title:"ADMIN",
-         staffs:staffs
-     })
-  
-   } catch (error) {
-     console.log(error);
-     res.status(400).json({ error: error.messsage });
-   }
-})
+app.get("/admin", async (req, res) => {
+  try {
+    const staffs = await Staff.find({}).sort({ createdAt: -1 });
+    console.log(staffs);
+    res.render("pages/admin", {
+      title: "ADMIN",
+      staffs: staffs,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ error: error.messsage });
+  }
+});
 app.get("/logout", (req, res) => {
   const isAdmin = req.path.startsWith("/admin");
 
@@ -125,62 +114,54 @@ app.get("/logout", (req, res) => {
   }
 });
 
-app.get('/admin/update/:id',async(req,res)=>{
-    const {id}=req.params
-         try{
-            const staff = await Staff.findOne({_id:id});
-            res.render("pages/editStaff",{
-                title:`Edit ${staff.name}`,
-                staff:staff
-            })
-         }
-         catch(error){
-            console.log(error)
-         }
-
-})
-app.get('/admin/regStaff',(req,res)=>{
-    res.render("pages/addStaff",{
-        title:"Staff Registration"
-    })
-})
-
-app.get("/studentReg",async(req,res)=>{
-    res.render("pages/addStudent",{
-        title:"Student Registration"
-    })
-})
-app.get("/staff/:id/course/:name/courseReg", async (req, res) => {
-        const { id, name } = req.params;
-
-        try{
-
-                 const staffs = await Staff.findById({ _id: id });
-                 if(!staffs){
-                  res.status(400).json({error:"Server error"})
-                 }
-                 else{
-                        req.session.isAuthenticated = true;
-
-                   res.render("pages/addStudentwithcourses", {
-                     title: "Course Registration",
-                     course:name
-                   });
-
-                 }
-
-
-        }
-        catch(error){
-          res.status(400).json({error:"Server error"})
-        }
+app.get("/admin/update/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const staff = await Staff.findOne({ _id: id });
+    res.render("pages/editStaff", {
+      title: `Edit ${staff.name}`,
+      staff: staff,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+app.get("/admin/regStaff", (req, res) => {
+  res.render("pages/addStaff", {
+    title: "Staff Registration",
+  });
 });
 
-app.get("/sucessful",async(req,res)=>{
-    res.render("pages/thankyou",{
-        title:"Successful"
-    })
-})
+app.get("/studentReg", async (req, res) => {
+  res.render("pages/addStudent", {
+    title: "Student Registration",
+  });
+});
+app.get("/staff/:id/course/:name/courseReg", async (req, res) => {
+  const { id, name } = req.params;
+
+  try {
+    const staffs = await Staff.findById({ _id: id });
+    if (!staffs) {
+      res.status(400).json({ error: "Server error" });
+    } else {
+      req.session.isAuthenticated = true;
+
+      res.render("pages/addStudentwithcourses", {
+        title: "Course Registration",
+        course: name,
+      });
+    }
+  } catch (error) {
+    res.status(400).json({ error: "Server error" });
+  }
+});
+
+app.get("/sucessful", async (req, res) => {
+  res.render("pages/thankyou", {
+    title: "Successful",
+  });
+});
 app.get("/staff/:id/course", async (req, res) => {
   const { id } = req.params;
   try {
@@ -229,7 +210,7 @@ app.get("/staff/:id/course/:name", async (req, res) => {
     });
 
     console.log("Students:", students);
-          req.session.isAuthenticated = true;
+    req.session.isAuthenticated = true;
 
     res.render("pages/course", {
       title: `Staff`,
@@ -248,30 +229,18 @@ app.get("/staff/:id/course/:name/attendance", async (req, res) => {
   console.log(name);
   try {
     const staffs = await Staff.findById({ _id: id });
-<<<<<<< HEAD
+
     const students = await Attendance.find({ course: { $in: name } });
-=======
-    const staffCourses = staffs.courses.map(
-      (course) => new RegExp(course, "i")
-    );
 
-    console.log("Staff Courses:", staffCourses);
-    const students = await Student.find({
-      courses: {
-        $elemMatch: { $regex: new RegExp(name, "i") },
-      },
-    });
->>>>>>> 8bd1a0838e4c7e3266e1d954f789339f9cf2e6f5
 
-    console.log("Students:", students);
-          req.session.isAuthenticated = true;
+    req.session.isAuthenticated = true;
 
     res.render("pages/courseAttendance", {
       title: `Staff`,
       staff: staffs,
       students: students,
       course: name,
-      req:req
+      req: req,
     });
   } catch (error) {
     console.log(error);
@@ -288,12 +257,10 @@ app.get("/staff/:id/attendance", async (req, res) => {
 
     console.log("Staff Courses:", staffCourses);
 
-<<<<<<< HEAD
     const attendance = await Attendance.find({ course: { $in: staffCourses } });
-   
 
     console.log("Students:", attendance);
-=======
+
     const students = await Student.find({ courses: { $in: staffCourses } });
     const studentCourses = students
       .map((student) => student.courses.map((course) => course))
@@ -305,17 +272,16 @@ app.get("/staff/:id/attendance", async (req, res) => {
     console.log("common courses:", commonCourses);
 
     console.log("Students:", students);
->>>>>>> 8bd1a0838e4c7e3266e1d954f789339f9cf2e6f5
-          req.session.isAuthenticated = true;
+
+    req.session.isAuthenticated = true;
 
     res.render("pages/attendance", {
       title: `Attendance`,
       staff: staffs,
-<<<<<<< HEAD
+
       students: attendance,
-=======
+
       students: students,
->>>>>>> 8bd1a0838e4c7e3266e1d954f789339f9cf2e6f5
     });
   } catch (error) {
     console.log(error);
@@ -323,11 +289,13 @@ app.get("/staff/:id/attendance", async (req, res) => {
   }
 });
 
-
-mongoose.connect(process.env.DB)
-.then((result)=>{
-    http.listen(port,()=>{console.log(`listening on ${port}`)})
-})
-.catch((error)=>{
-    console.log(error)
-})
+mongoose
+  .connect(process.env.DB)
+  .then((result) => {
+    http.listen(port, () => {
+      console.log(`listening on ${port}`);
+    });
+  })
+  .catch((error) => {
+    console.log(error);
+  });
