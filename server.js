@@ -281,7 +281,6 @@ app.get("/staff/:id/attendance", async (req, res) => {
 
       students: attendance,
 
-      students: students,
     });
   } catch (error) {
     console.log(error);
