@@ -85,21 +85,27 @@ router.post("/start/:id", authenticateToken,async (req, res) => {
   try {
     const exist = await staff.findById({ _id: id });
     if (exist) {
-      const students = await Student.find({ courses: course });
-      for (const stud of students) {
-        const attend = await Attendance.create({
-          student: stud.name,
-          matricno: stud.matricno,
-          imagename: stud.imagename,
+      const students = await Student.find({ courses: course })
+      if(students.length>0){
 
-          status: "absent",
-          course,
-        });
+        for (const stud of students) {
+          const attend = await Attendance.create({
+            student: stud.name,
+            matricno: stud.matricno,
+            imagename: stud.imagename,
+  
+            status: "absent",
+            course,
+          });
+        }
+  
+        res
+          .status(200)
+          .json({ message: "Attendance records created successfully" });
+      }else
+      {
+        throw Error(`You do not have any student registered for ${course}`)
       }
-
-      res
-        .status(200)
-        .json({ message: "Attendance records created successfully" });
     } else {
       throw Error("You are not Authorized");
     }
