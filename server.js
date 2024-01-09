@@ -232,7 +232,6 @@ app.get("/staff/:id/course/:name/attendance", async (req, res) => {
 
     const students = await Attendance.find({ course: { $in: name } });
 
-
     req.session.isAuthenticated = true;
 
     res.render("pages/courseAttendance", {
@@ -280,7 +279,6 @@ app.get("/staff/:id/attendance", async (req, res) => {
       staff: staffs,
 
       students: attendance,
-
     });
   } catch (error) {
     console.log(error);

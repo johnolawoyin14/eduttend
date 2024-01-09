@@ -11,8 +11,7 @@ const Student = require("../models/studentModel");
 const secretKey = process.env.SECRET; // Replace with a secure secret key
 function authenticateToken(req, res, next) {
   const token = req.header("Authorization");
-  if(!req.session.token || !req.session.userId){
-
+  if (!req.session.token || !req.session.userId) {
     return res.status(401).json({ error: "No user Logged in" });
   }
 
@@ -25,7 +24,6 @@ function authenticateToken(req, res, next) {
       return res.status(403).json({ error: "Forbidden: Invalid token" });
     }
 
-  
     next();
   });
 }
@@ -50,13 +48,14 @@ router.post("/login", async (req, res) => {
       { userId: existingUser._id, username: existingUser.name },
       secretKey
     );
-    console.log(token)
+    console.log(token);
     req.session.token = token;
     req.session.userId = existingUser._id;
 
-   const responseUser = {
-      ...existingUser.toObject(),  // This spreads existingUser properties
-      token}
+    const responseUser = {
+      ...existingUser.toObject(), // This spreads existingUser properties
+      token,
+    };
 
     res.status(200).json({ user: responseUser });
   } catch (error) {
@@ -65,7 +64,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/logout",authenticateToken, (req, res) => {
+router.post("/logout", authenticateToken, (req, res) => {
   try {
     // Clear user-related information from the session
     req.session.token = null;
@@ -78,33 +77,31 @@ router.post("/logout",authenticateToken, (req, res) => {
   }
 });
 
-router.post("/start/:id", authenticateToken,async (req, res) => {
+router.post("/start/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
   const { timeout, course } = req.body;
 
   try {
     const exist = await staff.findById({ _id: id });
     if (exist) {
-      const students = await Student.find({ courses: course })
-      if(students.length>0){
-
+      const students = await Student.find({ courses: course });
+      if (students.length > 0) {
         for (const stud of students) {
           const attend = await Attendance.create({
             student: stud.name,
             matricno: stud.matricno,
             imagename: stud.imagename,
-  
+
             status: "absent",
             course,
           });
         }
-  
+
         res
           .status(200)
           .json({ message: "Attendance records created successfully" });
-      }else
-      {
-        throw Error(`You do not have any student registered for ${course}`)
+      } else {
+        throw Error(`You do not have any student registered for ${course}`);
       }
     } else {
       throw Error("You are not Authorized");
@@ -114,12 +111,11 @@ router.post("/start/:id", authenticateToken,async (req, res) => {
     console.log({ error: error.message });
   }
 });
-router.post("/update", authenticateToken, async (req, res) => {
-
-
-
-// Endpoint to receive attendance data from Django server
-
+router.post("/update", async (req, res) => {
+  // Endpoint to receive attendance data from Django server
+    // Extract and process the image from the request
+    console.log(req.file)
+   
 
   const { studentId, status } = req.body;
 
@@ -153,5 +149,8 @@ router.post("/update", authenticateToken, async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
-})
-module.exports=router
+});
+module.exports = router;
+
+
+
