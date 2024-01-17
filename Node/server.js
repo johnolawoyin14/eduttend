@@ -7,7 +7,6 @@ const http = require("http").createServer(app);
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const path = require("path");
-const socket = require("socket.io")(http);
 const port = process.env.PORT;
 const Staff = require("./models/staffModel");
 const Student = require("./models/studentModel");
@@ -16,6 +15,26 @@ const Attendance = require("./models/attendanceModel");
 
 const userRoute = require("./routes/user");
 const attendanceRoute = require("./routes/attendance");
+app.get("/staff/:id/course/:name/courseReg", async (req, res) => {
+  const { id, name } = req.params;
+
+  try {
+    const staffs = await Staff.findById({ _id: id });
+    if (!staffs) {
+      res.status(400).json({ error: "Server error" });
+    } else {
+
+      res.render("pages/addStudentwithcourses", {
+        title: "Course Registration",
+        course: name,
+        id:id
+      });
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ error: "Server error" });
+  }
+});
 const session = require("express-session");
 app.use(morgan("dev"));
 app.use(express.json());
@@ -55,7 +74,6 @@ app.use(
   })
 );
 const isAuthenticated = async (req, res, next) => {
-  console.log(req.session);
   // Check if the request path is "/login" or if the user is authenticated
   if (req.path === "/login" || req.session.isAuthenticated) {
     return next();
@@ -137,25 +155,7 @@ app.get("/studentReg", async (req, res) => {
     title: "Student Registration",
   });
 });
-app.get("/staff/:id/course/:name/courseReg", async (req, res) => {
-  const { id, name } = req.params;
 
-  try {
-    const staffs = await Staff.findById({ _id: id });
-    if (!staffs) {
-      res.status(400).json({ error: "Server error" });
-    } else {
-      req.session.isAuthenticated = true;
-
-      res.render("pages/addStudentwithcourses", {
-        title: "Course Registration",
-        course: name,
-      });
-    }
-  } catch (error) {
-    res.status(400).json({ error: "Server error" });
-  }
-});
 
 app.get("/sucessful", async (req, res) => {
   res.render("pages/thankyou", {

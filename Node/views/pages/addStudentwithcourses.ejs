@@ -130,19 +130,16 @@ const formData = new FormData(); // Use FormData to handle file uploads
   });
 
            const json= await useFetch.json()
-           if (!useFetch.ok){
+           if (json.error||!useFetch.ok){
             
             info.innerText=json.error
-        } if (!useFetch.ok){
-
-               info.innerText=json.error
-           }
+        } 
         if (useFetch.ok){
                info.innerText=json
             console.log(json)
             setTimeout(() => {
                 
-                location.href="/sucessful"
+                location.href="/staff/<%= id %>/course/<%= course %>/"
             }, 3000);
            }
           
