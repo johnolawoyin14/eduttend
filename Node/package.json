@@ -1,7 +1,7 @@
 {
   "name": "Attendance",
   "version": "1.0.0",
-  "main": "peopel.js",
+  "main": "server.js",
   "directories": {
     "doc": "docs"
   },
@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.6.5",
     "bcryptjs": "^2.4.3",
     "connect-mongo": "^5.1.0",
     "cors": "^2.8.5",

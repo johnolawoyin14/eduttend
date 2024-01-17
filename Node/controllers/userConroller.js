@@ -2,6 +2,9 @@ const jwt = require("jsonwebtoken");
 const Staff = require("../models/staffModel");
 const Student = require("../models/studentModel");
 const multer = require("multer");
+const axios=require("axios")
+const fs=require("fs")
+const path=require("path")
 const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
 };
@@ -58,6 +61,9 @@ const addStaff = async (req, res) => {
 };
 const addStudent = async (req, res) => {
   console.log(req.body);
+  try {
+          console.log(req.file.path);
+
   const { matricno, name, courses } = req.body;
   if (!req.file) {
     res.status(400).json({ error: "Pls input an image" });
@@ -78,29 +84,111 @@ const addStudent = async (req, res) => {
 
     if (exists) {
       console.log("this student exist:", exists);
+      if(exists.courses.includes(courses)){
+        throw new Error(`${matricno} is registered for ${courses} already`);
+      }
       exists.courses.push(courses);
+const matric = matricno.split("/").join("").toUpperCase();
+  const imagePath = path.join(__dirname, "../students", req.file.filename); 
 
-      const update = await Student.findOneAndUpdate(
-        { _id: exists._id },
-        { $set: { courses: exists.courses } }
-      );
-      res
-        .status(200)
-        .json(`${exists.name} was successfully updated with ${courses}`);
+console.log(matric,imagePath)
+const body = {
+  id: matric,
+  image_data: imagePath
+}
+
+try {
+  const response = await axios.post("http://127.0.0.1:5000/register", body, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  console.log(response.data);
+
+  if (!response.data.success) {
+    throw new Error(response.data.message);
+  }
+ else{
+  console.log(response.data.message)
+    const update = await Student.findOneAndUpdate(
+      { _id: exists._id },
+      { $set: { courses: exists.courses } }
+    );
+
+    res
+      .status(200)
+      .json(`    ${exists.name} was successfully updated with ${courses}`);
+      fs.unlink(imagePath, (err) => {
+        if (err) throw err;
+        console.log(`${imagePath} deleted`);
+      });
+  }
+
+} catch (error) {
+  console.error(error.message);
+  fs.unlink(imagePath, (err) => {
+    if (err) throw err;
+    console.log(`${imagePath} deleted`);
+  });
+  res.status(500).json({ error: "Internal Server Error" });
+}
+
     } else {
-      try {
-        const student = await Student.create(postData);
-        res
-          .status(200)
-          .json(
-            `${student.name} has been successfully registered with matric no ${student.matricno}`
-          );
+     const matric = matricno.split("/").join("").toUpperCase();
+       const imagePath = path.join(__dirname, "../students", req.file.filename); 
+
+     console.log(matric, path);
+     const body = {
+       id: matric,
+       image_data: imagePath,
+     };
+
+     try {
+       const response = await axios.post(
+         "http://127.0.0.1:5000/register",
+         body,
+         {
+           headers: {
+             "Content-Type": "application/json",
+           },
+         }
+       );
+
+       console.log(response.data);
+
+       if (!response.data.success ) {
+         throw new Error(response.data.message);
+       } else {
+        console.log(response.data.message)
+         
+           const student = await Student.create(postData);
+           res
+             .status(200)
+             .json(
+               `${student.name} has been successfully registered with matric no ${student.matricno}`
+             );
+       }
+     
+     } catch (error) {
+       console.error(error.message);
+       fs.unlink(imagePath, (err) => {
+         if (err) throw err;
+         console.log(`${imagePath} deleted`);
+       });
+       res.status(500).json({ error:error.message });
+     }
+
+        }
+      }
       } catch (error) {
-        console.log(error);
+        console.log(error.message);
+        fs.unlink(imagePath, (err) => {
+          if (err) throw err;
+          console.log(`${imagePath} deleted`);
+        });
         res.status(400).json({ error: error.message });
       }
-    }
-  }
 };
 
 const students = async (req, res) => {
@@ -130,6 +218,28 @@ const removeStudent = async (req, res) => {
   try {
     const { id } = req.params;
     const student = await Student.findOneAndDelete({ _id: id });
+    const imagePath = path.join(__dirname, "../students", student.imagename);
+    matric=student.matricno.split("/").join("").toUpperCase()
+    const body={
+      path:matric
+    }
+    const response = await axios.post(
+      "http://127.0.0.1:5000/delete",
+      body,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if(!response.data.success){
+      console.log(response.data.message)
+      throw new Error("file deletion unsuccessful")
+    }
+    fs.unlink(imagePath, (err) => {
+      if (err) throw err;
+      console.log(`${imagePath} deleted`);
+    });
     // res.status(200).json(student)
   } catch (error) {
     console.log(error);
@@ -170,9 +280,37 @@ const editStudent = async (req, res) => {
           { _id: id },
           { $set: { courses: exists.courses } }
         );
+        const imagePath = path.join(
+          __dirname,
+          "../students",
+          student.imagename
+        );
+        matric = student.matricno.split("/").join("").toUpperCase();
+        const body = {
+          path: matric,
+        };
+        const response = await axios.post(
+          "http://127.0.0.1:5000/delete",
+          body,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (!response.data.success) {
+          console.log(response.data.message);
+          throw new Error("file deletion unsuccessful");
+        }
+        fs.unlink(imagePath, (err) => {
+          if (err){
+            throw new Error(err);
+          } ;
+          console.log(`${imagePath} deleted`);
+        });
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       res.status(400).json({ error: error.message });
     }
   } else {
@@ -200,6 +338,11 @@ const removeStaff = async (req, res) => {
     const { id } = req.params;
     const staff = await Staff.findOneAndDelete({ _id: id });
     res.status(200).json(staff);
+    const imagePath = path.join(__dirname, "../staffs", staff.imagename);
+    fs.unlink(imagePath, (err) => {
+      if (err) throw err;
+      console.log(`${imagePath} deleted`);
+    });
   } catch (error) {
     console.log(error);
     res.status(400).json({ error: error.message });

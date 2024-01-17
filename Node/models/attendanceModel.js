@@ -7,14 +7,12 @@ const attendanceSchema = new mongoose.Schema({
 
 
   date: {
-    type: Date,
-    default: Date.now,
-    get: function (date) {
-      return date
-        .toISOString()
-        .replace(/T/, " ")
-        .replace(/\.\d+Z$/, "");
-    },
+    type: String,
+    require:true
+  },
+  time: {
+    type: String,
+    require:true
   },
 
   course: { type: String, require: true },

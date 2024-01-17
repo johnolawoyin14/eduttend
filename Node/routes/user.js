@@ -14,6 +14,7 @@ const {
   editStaff,
   editStudent
 } = require("../controllers/userConroller");
+const { isAuthenticated } = require("../authmiddleware");
 
   const studentStorage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -39,7 +40,7 @@ const uploadStaff= multer({ storage: staffStorage });
 const uploadStudent = multer({ storage: studentStorage });
 
 
-router.post("/login",login)
+router.post("/login",isAuthenticated,login)
 router.post("/addStaff",uploadStaff.single("image"),addStaff)
 router.post("/addStudent", uploadStudent.single("image"), addStudent);
 router.get(`/download/:filename`, (req, res) => {

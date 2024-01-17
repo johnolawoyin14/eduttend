@@ -131,6 +131,24 @@ white-space: pre-line !important;
 
   background-color: #053DC8;
  }
+ .filter{
+  position: absolute;
+  bottom: 5rem;
+  right: 5rem;
+  display: flex;
+ }
+ .filter a{
+  display: block;
+  text-decoration: none;
+  width: fit-content;
+  background: red;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+ }
+ .filter a:active{
+  opacity: 0.7;
+ }
 
 </style>
 <div class="sidebar position-relative">
@@ -195,20 +213,17 @@ white-space: pre-line !important;
 
                     <%= student.course %> 
                     </td>
-   <td class="tr "> <%= student.date %></td>
+   <td class="tr "> <%= student.date %>/<%= student.time %></td>
    <td class="tr trend"> <%= student.status %></td>
 
-                     STA101
-                    </td>
-   <td class="tr "> 12-10-23/8:20pm</td>
-   <td class="tr trend"> Present</td>
+                   
 
               </tr>
                <%}); %>
             </tbody>
     </table>
     <button class="exportBtn">
-        
+      
         <img src="/images/export.png" alt="export to excel" class="export">
     </button>
     <% } else{ %>
@@ -217,6 +232,10 @@ white-space: pre-line !important;
       
       
       
+      <div class="filter">
+        <input type="date">
+        <a href="">Fetch</a>
+      </div>
     </div>
     
   </div>
