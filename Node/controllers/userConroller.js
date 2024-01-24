@@ -44,6 +44,27 @@ const addStaff = async (req, res) => {
     console.log(req.body, filename);
 
     try {
+       const imagePath = path.join(__dirname, "../staffs", req.file.filename);
+
+       const body = {
+         id: email,
+         image_data: imagePath,
+        };
+        console.log(body);
+        const response = await axios.post("http://127.0.0.1:5000/register", body, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  console.log(response.data);
+
+  if (!response.data.success) {
+    throw new Error(response.data.message);
+  }
+ else{
+  console.log(response.data.message)
+
       const staff = await Staff.addStaff({
         email,
         password,
@@ -52,7 +73,7 @@ const addStaff = async (req, res) => {
         imagename: filename,
       });
 
-      res.status(200).json(`${staff.name} was successfully added`);
+      res.status(200).json(`${staff.name} was successfully added`);}
     } catch (error) {
       console.log(error);
       res.status(400).json({ error: error.message });

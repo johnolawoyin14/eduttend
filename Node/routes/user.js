@@ -32,7 +32,7 @@ const { isAuthenticated } = require("../authmiddleware");
     },
     filename: function (req, file, cb) {
       // const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-      cb(null,`${ req.body.name}` + ".jpg");
+      cb(null,`${ req.body.email}` + ".jpg");
     },
   });
   
