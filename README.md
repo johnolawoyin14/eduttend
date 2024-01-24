@@ -38,7 +38,7 @@ NOTE:- THE EXPRESS SERVER IS RUNNING ON http://localhost:2500/
 NOTE2:-ALL THE ROUTES DEPEND ON THE OTHER DO NOT JUMP ANY, THE ROUTES ARE PROTECTED TO A LEVEL, IF U DONT LOGIN U WONT BE AUTHENTICATEDD 
 ***Routes***
 1) /api/attendance/login
-    -under this route pass in the lecturers name to login
+    -under this route send in the registered lecturers image
     -this will then return a json which you can use for everyother aspect of this project
     -u can access the courses and the id from this json
 
@@ -52,5 +52,8 @@ NOTE2:-ALL THE ROUTES DEPEND ON THE OTHER DO NOT JUMP ANY, THE ROUTES ARE PROTEC
         1) This route will take up to minute or more before returning any message
         2) This model is not yet returning the right image_id just use this routes to test run your side of the project
 
+
+4) the logout route is /api/attendance/logout
+    pls find a way to always logout when the gui closes or when the time expires , i made the route such that the user can only login one session , the the last session didnt logout the user will still be said to be logged in
  
 
