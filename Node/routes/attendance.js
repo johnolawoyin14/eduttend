@@ -21,12 +21,15 @@ const fs=require("fs")
     },
   });
   const uploadVerify= multer({ storage: staffStorage });
-const secretKey = process.env.SECRET; // Replace with a secure secret key
+const secretKey = process.env.SECRET; 
+
+
 function authenticateToken(req, res, next) {
   const token = req.header("Authorization");
-  if (!req.session.token || !req.session.userId) {
-    return res.status(401).json({ error: "No user Logged in" });
-  }
+  console.log({token})
+  // if (!req.session.token || !req.session.userId) {
+  //   return res.status(401).json({ error: "No user Logged in" });
+  // }
 
   if (!token) {
     return res.status(401).json({ error: "Unauthorized: Token not provided" });
@@ -42,14 +45,41 @@ function authenticateToken(req, res, next) {
   });
 }
 
-router.post("/login", async (req, res) => {
-  const { name } = req.body;
+router.post("/login", uploadVerify.single("image"),async (req, res) => {
 
   try {
-    if(!name){
-      throw new Error("Input lecturer's name")
-    }
-    const existingUser = await staff.findOne({ name });
+ if(!req.file){
+  throw new Error("Input an image")
+ }
+  const imagePath = path.join(__dirname, "../verify", req.file.filename); 
+
+    const body = {
+      image_path: imagePath
+    };
+    console.log(body)
+      // console.log(req.file.path)
+      const response = await axios.post(
+        "http://127.0.0.1:5000/detect",
+        body,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(response.data);
+        fs.unlink(imagePath,(err)=>{
+          if (err)throw err
+          console.log(`${imagePath} deleted`)
+        })
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      } else {
+        
+        const email=response.data.id
+        console.log(email)
+    const existingUser = await staff.findOne({ email });
 
     if (!existingUser) {
       throw new Error("User does not exist");
@@ -73,9 +103,10 @@ router.post("/login", async (req, res) => {
       ...existingUser.toObject(), // This spreads existingUser properties
       token,
     };
-
     res.status(200).json({ user: responseUser });
+  }
   } catch (error) {
+   
     res.status(400).json({ error: error.message });
     console.error({ error: error.message });
   }

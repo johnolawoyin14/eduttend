@@ -285,9 +285,9 @@ app.get("/staff/:id/attendance", async (req, res) => {
     res.status(400).json("Server error");
   }
 });
-
+const local="mongodb://127.0.0.1:27017/attendance"
 mongoose
-  .connect(process.env.DB)
+  .connect(local)
   .then((result) => {
     http.listen(port, () => {
       console.log(`listening on ${port}`);
