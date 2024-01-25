@@ -1,8 +1,8 @@
 setuptools==58.4.0
 pip==23.3.2
-flask
-tensorflow
-deepface
-matplotlib
-opencv-python==4.6.0.66 
+flask==3.0.1
+tensorflow==2.8.4
+deepface==0.0.82
+matplotlib==3.7.4
+opencv-python==4.6.0.66
 grpcio==1.40.0
